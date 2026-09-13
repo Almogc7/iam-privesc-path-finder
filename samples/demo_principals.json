@@ -1,0 +1,254 @@
+{
+  "principals": [
+    {
+      "name": "dev-alice",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/dev-alice",
+      "attached_policies": [
+        {
+          "policy_name": "SelfServicePolicy",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "iam:AttachUserPolicy",
+              "resource": "arn:aws:iam::111111111111:user/dev-alice"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "ci-deploy",
+      "type": "role",
+      "arn": "arn:aws:iam::111111111111:role/ci-deploy",
+      "attached_policies": [
+        {
+          "policy_name": "DeployPolicy",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "iam:PutRolePolicy",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "readonly-bob",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/readonly-bob",
+      "attached_policies": [
+        {
+          "policy_name": "ReadOnlyAccess",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "s3:GetObject",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "svc-data-pipeline",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/svc-data-pipeline",
+      "attached_policies": [
+        {
+          "policy_name": "LambdaDeployPolicy",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "iam:PassRole",
+              "resource": "arn:aws:iam::111111111111:role/prod-admin-role"
+            },
+            {
+              "effect": "Allow",
+              "action": "lambda:CreateFunction",
+              "resource": "*"
+            },
+            {
+              "effect": "Allow",
+              "action": "lambda:InvokeFunction",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "prod-admin-role",
+      "type": "role",
+      "arn": "arn:aws:iam::111111111111:role/prod-admin-role",
+      "attached_policies": [
+        {
+          "policy_name": "AdministratorAccess",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "*",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": [],
+      "trust_policy": {
+        "statements": [
+          {
+            "effect": "Allow",
+            "action": "sts:AssumeRole",
+            "principal": "lambda.amazonaws.com"
+          }
+        ]
+      }
+    },
+    {
+      "name": "app-admin-bot",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/app-admin-bot",
+      "attached_policies": [
+        {
+          "policy_name": "EditablePolicy",
+          "policy_arn": "arn:aws:iam::111111111111:policy/EditablePolicy",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "s3:ListBucket",
+              "resource": "*"
+            },
+            {
+              "effect": "Allow",
+              "action": "iam:CreatePolicyVersion",
+              "resource": "arn:aws:iam::111111111111:policy/EditablePolicy"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "intern-analyst",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/intern-analyst",
+      "attached_policies": [
+        {
+          "policy_name": "OpsAccess",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "sts:AssumeRole",
+              "resource": "arn:aws:iam::111111111111:role/ops-deploy-role"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "ops-deploy-role",
+      "type": "role",
+      "arn": "arn:aws:iam::111111111111:role/ops-deploy-role",
+      "attached_policies": [
+        {
+          "policy_name": "OpsEscalation",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "sts:AssumeRole",
+              "resource": "arn:aws:iam::111111111111:role/OrgAdminRole"
+            }
+          ]
+        }
+      ],
+      "inline_policies": [],
+      "trust_policy": {
+        "statements": [
+          {
+            "effect": "Allow",
+            "action": "sts:AssumeRole",
+            "principal": "arn:aws:iam::111111111111:user/intern-analyst"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrgAdminRole",
+      "type": "role",
+      "arn": "arn:aws:iam::111111111111:role/OrgAdminRole",
+      "attached_policies": [
+        {
+          "policy_name": "AdministratorAccess",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "*",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": [],
+      "trust_policy": {
+        "statements": [
+          {
+            "effect": "Allow",
+            "action": "sts:AssumeRole",
+            "principal": "arn:aws:iam::111111111111:role/ops-deploy-role"
+          }
+        ]
+      }
+    },
+    {
+      "name": "security-auditor",
+      "type": "user",
+      "arn": "arn:aws:iam::111111111111:user/security-auditor",
+      "attached_policies": [
+        {
+          "policy_name": "BroadAssumePolicy",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "sts:AssumeRole",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": []
+    },
+    {
+      "name": "break-glass-admin-role",
+      "type": "role",
+      "arn": "arn:aws:iam::111111111111:role/break-glass-admin-role",
+      "attached_policies": [
+        {
+          "policy_name": "AdministratorAccess",
+          "statements": [
+            {
+              "effect": "Allow",
+              "action": "*",
+              "resource": "*"
+            }
+          ]
+        }
+      ],
+      "inline_policies": [],
+      "trust_policy": {
+        "statements": [
+          {
+            "effect": "Allow",
+            "action": "sts:AssumeRole",
+            "principal": "arn:aws:iam::111111111111:role/incident-commander-role"
+          }
+        ]
+      }
+    }
+  ]
+}
