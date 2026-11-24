@@ -111,6 +111,7 @@ main.py                          # CLI entry point (argparse)
 models.py                        # Statement, Principal, Finding dataclasses
 parser.py                        # loads/normalizes JSON into Principal objects
 detectors/
+  __init__.py                    # DETECTORS registry
   attach_policy_to_self.py
   put_inline_policy.py
   pass_role_lambda.py
